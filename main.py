@@ -18,7 +18,10 @@ SCREEN_HEIGHT = 500
 os.environ['SCREEN_WIDTH'] = str(SCREEN_WIDTH)
 os.environ['SCREEN_HEIGHT'] = str(SCREEN_HEIGHT)
 
-screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
+screen = pygame.display.set_mode(SCREEN_SIZE)
+
+display = pygame.Surface((300, 300))
 
 
 class EventCheck(object):
@@ -89,9 +92,52 @@ class CollideTest(pygame.sprite.Sprite):
     def black_update(self):
         self.surf.fill((0,0,0))
     
+
+class GameMap(object):
+    def __init__(self):
+        dirt_path = os.path.join(ASSET_DIR, "tiles", "dirt.png")
+        grass_path = os.path.join(ASSET_DIR, "tiles", "grass.png")
+        
+        self.tile_size = 25
+        self.dirt_img = pygame.image.load(dirt_path)
+        self.grass_img = pygame.image.load(grass_path)
+        self.none_img = pygame.Surface((self.tile_size, self.tile_size))
+        self.none_img.fill((82, 89, 93))
+        self.game_map = [   [0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0,0,0,0,0],
+                            [1,1,1,1,1,1,1,1,1,1,1,1],
+                            [2,2,2,2,2,2,2,2,2,2,2,2],
+                            [2,2,2,2,2,2,2,2,2,2,2,2],
+                            [2,2,2,2,2,2,2,2,2,2,2,2],
+                            [2,2,2,2,2,2,2,2,2,2,2,2],
+                            [2,2,2,2,2,2,2,2,2,2,2,2],   ]
+
+    
+    def update(self, surf : pygame.Surface):
+        y = 0
+        for row in self.game_map:
+            x = 0
+            for tile in row:
+                if tile == 0 :
+                    surf.blit(self.none_img, (x * self.tile_size, y * self.tile_size))
+                if tile == 1 :
+                    surf.blit(self.grass_img, (x * self.tile_size, y * self.tile_size))
+                if tile == 2 :
+                    surf.blit(self.dirt_img, (x * self.tile_size, y * self.tile_size))
+                x += 1
+            y += 1
         
 
+
+
+
 Player = PlayerObject()
+
+Map = GameMap()
 
 test_sprite = CollideTest()
 
@@ -103,11 +149,20 @@ EVENT = EventCheck()
 while EVENT.running:
     EVENT.check()
 
-    # Fill the background with white
+    # screen에 흰색을 채웁니다.
     screen.fill((255, 255, 255))
     
-    screen.blit(Player.surf, Player.rect)
-    screen.blit(test_sprite.surf, test_sprite.rect)
+    # display에 다른 색을 채웁니다.
+    display.fill((82, 89, 93))
+    display.blit(Player.surf, Player.rect)
+    display.blit(test_sprite.surf, test_sprite.rect)
+    
+    # display를 screen (0,0) 좌표에 뿌립니다.
+    display = pygame.transform.scale(display, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    Map.update(display)
+    
+    screen.blit(display, (0, 0))
+
     Player.update()
 
     # collide check
