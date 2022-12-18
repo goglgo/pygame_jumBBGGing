@@ -5,6 +5,11 @@ ASSET_DIR = os.path.join(BASE_DIR, "assets")
 SCREEN_WIDTH = int(os.environ.get('SCREEN_WIDTH', 500))
 SCREEN_HEIGHT = int(os.environ.get('SCREEN_HEIGHT', 500))
 
+class Tile(pygame.sprite.Sprite):
+    def __init__(self, img: pygame.Surface, x, y, w, h):
+        super(Tile, self).__init__()
+        self.surf = img.convert()
+        self.rect = pygame.Rect(x, y, w, h)
 
 class GameMap(object):
     def __init__(self):
@@ -34,7 +39,8 @@ class GameMap(object):
         self.dirt_img = pygame.transform.scale(self.dirt_img, (self.tile_size_x, self.tile_size_y))
         self.grass_img = pygame.transform.scale(self.grass_img, (self.tile_size_x, self.tile_size_y))
         self.none_img = pygame.transform.scale(self.none_img, (self.tile_size_x, self.tile_size_y))
-
+        
+        self.collison_group = pygame.sprite.Group()
     
     def update(self, surf : pygame.Surface):
         y = 0
@@ -44,9 +50,21 @@ class GameMap(object):
                 if tile == 0 :
                     surf.blit(self.none_img, (x * self.tile_size_x, y * self.tile_size_y))
                 if tile == 1 :
-                    surf.blit(self.grass_img, (x * self.tile_size_x, y * self.tile_size_y))
+                    vx = x * self.tile_size_x
+                    vy = y * self.tile_size_y
+                    w =  self.tile_size_x
+                    h = self.tile_size_y
+                    grass = Tile(self.grass_img, vx, vy, w, h)
+                    surf.blit(grass.surf, grass.rect)
+                    self.collison_group.add(grass)
+
                 if tile == 2 :
-                    surf.blit(self.dirt_img, (x * self.tile_size_x, y * self.tile_size_y))
+                    vx = x * self.tile_size_x
+                    vy = y * self.tile_size_y
+                    w =  self.tile_size_x
+                    h = self.tile_size_y
+                    dirt = Tile(self.dirt_img, vx, vy, w, h)
+                    surf.blit(dirt.surf, dirt.rect)
                 x += 1
             y += 1
         

@@ -1,5 +1,6 @@
 import pygame, os
 from pygame.locals import *
+from .map import Tile
 
 BASE_DIR = os.getcwd()
 ASSET_DIR = os.path.join(BASE_DIR, "assets")
@@ -39,9 +40,15 @@ class PlayerObject(pygame.sprite.Sprite):
             self.rect.right = self.screen_width
 
         if self.rect.y > self.screen_height - self.picture.get_height():
-            self.player_y_momentum = -self.player_y_momentum
+            # self.player_y_momentum = -self.player_y_momentum
+            self.player_y_momentum = 0
         
         else:
             self.player_y_momentum += 0.2
-        
+
         self.rect.move_ip(0, self.player_y_momentum)
+
+    def check_collison(self, collisoned_tile_rect:Tile):
+        if self.rect.bottom >= collisoned_tile_rect.rect.top :
+            self.player_y_momentum = 0
+
