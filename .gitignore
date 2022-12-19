@@ -1,3 +1,4 @@
 myvenv
 *.pyc
-__pycache__/
+modules/__pycache__/*.pyc
+modules/__pycache__/
