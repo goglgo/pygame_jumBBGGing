@@ -41,6 +41,7 @@ class GameMap(object):
         self.none_img = pygame.transform.scale(self.none_img, (self.tile_size_x, self.tile_size_y))
         
         self.collison_group = pygame.sprite.Group()
+        self.collision_test_list = []
     
     def update(self, surf : pygame.Surface):
         y = 0
@@ -57,6 +58,7 @@ class GameMap(object):
                     grass = Tile(self.grass_img, vx, vy, w, h)
                     surf.blit(grass.surf, grass.rect)
                     self.collison_group.add(grass)
+                    self.collision_test_list.append(grass)
 
                 if tile == 2 :
                     vx = x * self.tile_size_x
@@ -65,6 +67,8 @@ class GameMap(object):
                     h = self.tile_size_y
                     dirt = Tile(self.dirt_img, vx, vy, w, h)
                     surf.blit(dirt.surf, dirt.rect)
+                    self.collison_group.add(dirt)
+                    self.collision_test_list.append(dirt)
                 x += 1
             y += 1
         
