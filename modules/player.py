@@ -22,16 +22,29 @@ class PlayerObject(pygame.sprite.Sprite):
         self.screen_width = int(os.environ.get('SCREEN_WIDTH', 500))
         self.screen_height = int(os.environ.get('SCREEN_HEIGHT', 500))
 
-        self.player_y_momentum = 0.2
+        # self.player_y_momentum = 0.2
+        self.right = False
+        self.left = False
+        self.up = False
+        self.down = False
 
-    def update(self):
-        pressed_keys = pygame.key.get_pressed()        
+    def move(self):
+        pressed_keys = pygame.key.get_pressed()  
+        
+        x_velocity = 0
+        y_velocity = 0
 
         if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-10,0)
+            x_velocity -= 10
         
         if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(10,0)
+            x_velocity += 10
+
+        if pressed_keys[K_UP]:
+            y_velocity -= 10
+        
+        if pressed_keys[K_DOWN]:
+            y_velocity += 10
 
         if self.rect.left < 0:
             self.rect.left = 0
@@ -41,12 +54,14 @@ class PlayerObject(pygame.sprite.Sprite):
 
         if self.rect.y > self.screen_height - self.picture.get_height():
             # self.player_y_momentum = -self.player_y_momentum
-            self.player_y_momentum = 0
+            self.rect.top = self.screen_height - self.picture.get_height()
+            # self.player_y_momentum = 0
+        if self.rect.y < 0:
+            self.rect.top = 0
         
-        else:
-            self.player_y_momentum += 0.2
+        self.rect.x += x_velocity
+        self.rect.y += y_velocity
 
-        self.rect.move_ip(0, self.player_y_momentum)
 
     def check_collison(self, collisoned_tile_rect:Tile):
         if self.rect.bottom >= collisoned_tile_rect.rect.top :

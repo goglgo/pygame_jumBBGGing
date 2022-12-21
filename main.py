@@ -86,20 +86,8 @@ while EVENT.running:
     # display를 screen (0,0) 좌표에 뿌립니다.
     display = pygame.transform.scale(display, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    Player.update()
+    Player.move()
 
-    # collide check
-    if pygame.sprite.spritecollideany(Player, collide_sprites):
-        test_sprite.red_update()
-    
-    else:
-        test_sprite.black_update()
-
-    collisoned_game_tile = pygame.sprite.spritecollideany(Player, Map.collision_group)
-    if collisoned_game_tile:
-        Player.check_collison(collisoned_game_tile)
-
-    # Flip the display
     pygame.display.flip()
     clock.tick(60)
 
