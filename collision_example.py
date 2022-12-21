@@ -18,8 +18,9 @@ def collision_test(rect,tiles):
     return collisions
 
 def move(rect,movement,tiles): # movement = [5,2]
-    rect.x += movement[0]
+    rect.x += movement[0] # right move
     collisions = collision_test(rect,tiles)
+    # collisions1 = collisions
     for tile in collisions:
         if movement[0] > 0:
             rect.right = tile.left
@@ -27,6 +28,9 @@ def move(rect,movement,tiles): # movement = [5,2]
             rect.left = tile.right
     rect.y += movement[1]
     collisions = collision_test(rect,tiles)
+    # collisions2 = collisions
+    # if collisions1 != collisions2:
+    #     print('not same!!!')
     for tile in collisions:
         if movement[1] > 0:
             rect.bottom = tile.top

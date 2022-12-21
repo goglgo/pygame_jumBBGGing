@@ -31,11 +31,33 @@ class PlayerObject(pygame.sprite.Sprite):
         self.left = True
 
 
-    def update(self):
-        pressed_keys = pygame.key.get_pressed()      
+    def update(self, collisioned_tiles:list[Tile] = None):
+        # if collisioned_tiles:
+        #     self.rect.x += self.player_x_momentum
+        #     for tile in collisioned_tiles:
+        #         if self.player_x_momentum > 0:
+        #             self.rect.right = tile.rect.left
+
+        #         elif self.player_x_momentum < 0:
+        #             self.rect.left = tile.rect.right
+
+        #     self.rect.y += self.player_y_momentum
+        #     for tile in collisioned_tiles:
+
+        #         if self.player_y_momentum > 0:
+        #             self.rect.bottom = tile.rect.top
+        #             self.player_y_momentum = 0
+
+        #         if self.player_y_momentum < 0:
+        #             self.rect.top = tile.rect.bottom
+            
+        # else:
         self.rect.move_ip(self.player_x_momentum, self.player_y_momentum)  
 
+        pressed_keys = pygame.key.get_pressed()
+
         # self.player_x_momentum = 0
+        
         if pressed_keys[K_LEFT] and pressed_keys[K_RIGHT]:
             self.player_x_momentum = 0
 
@@ -66,34 +88,54 @@ class PlayerObject(pygame.sprite.Sprite):
         
         else:
             self.player_y_momentum += 0.2
-        
 
-    def check_collison(self, collisoned_tiles:list[Tile]):
-        # self.rect.move_ip(0, self.player_y_momentum)  
+        # self.rect.move_ip(self.player_x_momentum, self.player_y_momentum)  
 
-        for tile in collisoned_tiles:
+    def check_collison(self, collision_group:pygame.sprite.Group):
+        collisioned_game_tile = pygame.sprite.spritecollide(self, collision_group, False)
+        for tile in collisioned_game_tile:
             if self.player_y_momentum > 0:
                 self.rect.bottom = tile.rect.top
-
-            elif self.player_y_momentum < 0:
+                self.player_y_momentum = 0
+            if self.player_y_momentum < 0:
                 self.rect.top = tile.rect.bottom
-            self.player_y_momentum = 0
+                self.player_y_momentum = 0
 
-        for tile in collisoned_tiles:
-            if self.rect.bottom != tile.rect.top:
-                # right
-                if self.player_x_momentum > 0:
-                    self.player_x_momentum = 0
-                    self.rect.right = tile.rect.left
-                    self.right = False
-                    self.left = True
+        # self.rect.move_ip(0, self.player_y_momentum)  
+        collisioned_game_tile = pygame.sprite.spritecollide(self, collision_group, False)
+        for tile in collisioned_game_tile:
+            if self.player_x_momentum > 0:
+                self.rect.right = tile.rect.left
+                self.player_x_momentum = 0 
+            if self.player_x_momentum < 0:
+                self.rect.left = tile.rect.right
+                self.player_x_momentum = 0 
+        
+        # self.rect.move_ip(self.player_x_momentum, 0)  
+
+        
+
+        # self.rect.move_ip(0, self.player_y_momentum)  
+
+        # for tile in collisoned_tiles:
+        #     if self.player_y_momentum > 0:
+        #         self.rect.bottom = tile.rect.top
+
+        #     elif self.player_y_momentum < 0:
+        #         self.rect.top = tile.rect.bottom
+        #     self.player_y_momentum = 0
+
+        # for tile in collisoned_tiles:
+        #     if self.player_x_momentum > 0:
+        #         self.player_x_momentum = 0
+        #         self.rect.right = tile.rect.left
+        #         self.right = False
+        #         self.left = True
                     
-                # left
-                elif self.player_x_momentum < 0:
-                    self.player_x_momentum = 0
-                    self.rect.left = tile.rect.right
-                    self.right = True
-                    self.left = False
+        #         # left
+        #     elif self.player_x_momentum < 0:
+        #         self.player_x_momentum = 0
+        #         self.rect.left = tile.rect.right
 
 
 

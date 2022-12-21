@@ -100,9 +100,13 @@ while EVENT.running:
     # if collisoned_game_tile:
     #     Player.check_collison(collisoned_game_tile)
 
-    collisoned_game_tile = pygame.sprite.spritecollide(Player, Map.collision_group, False)
-    if collisoned_game_tile:
-        Player.check_collison(collisoned_game_tile)
+    # collisoned_game_tile = pygame.sprite.spritecollide(Player, Map.collision_group, False)
+    # if collisoned_game_tile:
+    #     Player.update(collisoned_game_tile)
+
+    # collisoned_game_tile = pygame.sprite.spritecollide(Player, Map.collision_group, False)
+    # if collisoned_game_tile:
+    Player.check_collison(Map.collision_group)
 
     # Flip the display
     pygame.display.flip()
