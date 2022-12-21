@@ -78,6 +78,7 @@ while EVENT.running:
     # display에 다른 색을 채웁니다.
     display.fill((82, 89, 93))
     Map.update(display)
+    # Map.collison_group.update(display)
     
     display.blit(Player.surf, Player.rect)
     display.blit(test_sprite.surf, test_sprite.rect)
@@ -99,7 +100,7 @@ while EVENT.running:
     # if collisoned_game_tile:
     #     Player.check_collison(collisoned_game_tile)
 
-    collisoned_game_tile = pygame.sprite.spritecollide(Player, Map.collison_group, True)
+    collisoned_game_tile = pygame.sprite.spritecollide(Player, Map.collision_group, False)
     if collisoned_game_tile:
         Player.check_collison(collisoned_game_tile)
 

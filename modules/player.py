@@ -2,6 +2,8 @@ import pygame, os
 from pygame.locals import *
 from .map import Tile
 
+# https://github.com/IIITSERC/SSAD_2015_A3_Group2_7/blob/aabc2b87a18c7fba7d0c63ab46cd6a97ea6613e1/201402087/Player.py
+
 BASE_DIR = os.getcwd()
 ASSET_DIR = os.path.join(BASE_DIR, "assets")
 
@@ -25,12 +27,9 @@ class PlayerObject(pygame.sprite.Sprite):
         self.player_y_momentum = 0.2
         self.player_x_momentum = 10
 
-        self.movement = {
-            "right" : False,
-            "left" : False,
-            "up" : False,
-            "down" : False
-        }
+        self.right = True
+        self.left = True
+
 
     def update(self):
         pressed_keys = pygame.key.get_pressed()      
@@ -42,15 +41,17 @@ class PlayerObject(pygame.sprite.Sprite):
 
         elif pressed_keys[K_LEFT]:
             # self.rect.move_ip(-self.player_x_momentum,0)
-            self.player_x_momentum -= 2
-            if self.player_x_momentum < -6:
-                self.player_x_momentum = -6        
+            if self.left:
+                self.player_x_momentum -= 2
+                if self.player_x_momentum < -10:
+                    self.player_x_momentum = -10
         
         elif pressed_keys[K_RIGHT]:
             # self.rect.move_ip(self.player_x_momentum,0)
-            self.player_x_momentum += 2
-            if self.player_x_momentum > 6:
-                self.player_x_momentum = 6
+            if self.right:
+                self.player_x_momentum += 2
+                if self.player_x_momentum > 10:
+                    self.player_x_momentum = 10
         else:
             self.player_x_momentum = 0
 
@@ -65,64 +66,37 @@ class PlayerObject(pygame.sprite.Sprite):
         
         else:
             self.player_y_momentum += 0.2
-
         
 
     def check_collison(self, collisoned_tiles:list[Tile]):
-        # if self.rect.bottom >= collisoned_tiles[0].rect.top :
-        #     self.player_y_momentum = 0
-
-        # for tile in collisoned_tiles:
-        #     left_distance = self.rect.left - tile.rect.right
-        #     right_distance = tile.rect.left - self.rect.right
-
-        #     if self.movement["right"] == True:
-        #         right_distance = tile.rect.left - self.rect.right
-        #         height_distance = abs(tile.rect.centery - self.rect.centery)
-        #         # print(height_distance)
-        #         if right_distance < 10 and height_distance < 10:
-        #             self.rect.right = tile.rect.left
-        #             break
-        #             # print(111)
-            
-        #     if self.movement["left"] == True:
-        #         left_distance = self.rect.left - tile.rect.right
-        #         height_distance = abs(tile.rect.centery - self.rect.centery)
-        #         # print(height_distance)
-        #         if left_distance < 10 and height_distance < 10:
-        #             self.rect.left = tile.rect.right
-        #             break
-            
-        #     if self.rect.bottom >= tile.rect.top:
-        #         self.player_y_momentum = 0
-        #         self.rect.bottom = tile.rect.top
+        # self.rect.move_ip(0, self.player_y_momentum)  
 
         for tile in collisoned_tiles:
-        
-            if self.player_y_momentum > 0 :
-                if self.player_x_momentum == 0:
-                    self.rect.bottom = tile.rect.top
-                self.player_y_momentum = 0
-            
-            # elif self.player_y_momentum < 0:
-            #     self.rect.top = tile.rect.bottom
-            #     self.player_y_momentum = - self.player_y_momentum
-            # self.rect.move_ip(0, self.player_y_momentum)
+            if self.player_y_momentum > 0:
+                self.rect.bottom = tile.rect.top
 
-        # for tile in collisoned_tiles:
-            # when go to left
-            if self.player_x_momentum < 0:
-                self.player_x_momentum = 0    
-                # print("go left", self.player_x_momentum)
-                # self.player_x_momentum = 0
-            
-            # when go to right
-            elif self.player_x_momentum > 0:
-                self.player_x_momentum = 0   
-                self.rect.right = tile.rect.left
-                # print("go right", self.player_x_momentum)
-                # self.player_x_momentum = 0
-            # self.rect.move_ip(self.player_x_momentum, 0)
+            elif self.player_y_momentum < 0:
+                self.rect.top = tile.rect.bottom
+            self.player_y_momentum = 0
+
+        for tile in collisoned_tiles:
+            if self.rect.bottom != tile.rect.top:
+                # right
+                if self.player_x_momentum > 0:
+                    self.player_x_momentum = 0
+                    self.rect.right = tile.rect.left
+                    self.right = False
+                    self.left = True
+                    
+                # left
+                elif self.player_x_momentum < 0:
+                    self.player_x_momentum = 0
+                    self.rect.left = tile.rect.right
+                    self.right = True
+                    self.left = False
+
+
+
             
             
         # if self.rect.left 
