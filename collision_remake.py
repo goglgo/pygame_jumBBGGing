@@ -38,12 +38,14 @@ class Player(pygame.sprite.Sprite):
         self.left = False
         self.up = False
         self.down = False
-    
-    def move(self, movement=None):
+        self.x_acc = 0
+
+    def check_input_key(self)->None:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == KEYDOWN:
                 if event.key == K_RIGHT:
                     self.right = True
@@ -57,18 +59,23 @@ class Player(pygame.sprite.Sprite):
             if event.type == KEYUP:
                 if event.key == K_RIGHT:
                     self.right = False
+                    self.x_acc = 0
                 if event.key == K_LEFT:
                     self.left = False
                 if event.key == K_DOWN:
                     self.down = False
                 if event.key == K_UP:
                     self.up = False
-
+    
+    def move(self, movement=None):
+        self.check_input_key()
         self.x_velocity = 0
         self.y_velocity = 0
 
         if self.right == True:
-            self.x_velocity += 5
+            # self.x_acc += 0.2
+            # print(self.x_acc)
+            self.x_velocity += 5 + self.x_acc
         if self.left == True:
             self.x_velocity -= 5
         if self.up == True:
