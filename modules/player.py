@@ -28,7 +28,7 @@ class PlayerObject(pygame.sprite.Sprite):
         self.up = False
         self.down = False
 
-    def move(self):
+    def move(self, collision_group:dict[pygame.sprite.Group]):
         pressed_keys = pygame.key.get_pressed()  
         
         x_velocity = 0
@@ -60,10 +60,33 @@ class PlayerObject(pygame.sprite.Sprite):
             self.rect.top = 0
         
         self.rect.x += x_velocity
+        # check for map sprites collisions.
+        collisions = pygame.sprite.spritecollide(self, collision_group["map"], False)
+        for tile in collisions:
+            # x velocity 가 0보다 클 때 :: 오른쪽으로 갈 때
+            if x_velocity > 0 :
+                # 플레이어의 오른쪽은 충될된 타일의 왼쪽과 같게
+                self.rect.right = tile.rect.left
+
+            # x velocity 가 0보다 작을 때 :: 왼쪽으로 갈 때
+            if x_velocity < 0 :
+                # 플레이어의 왼쪽은 충될된 타일의 오른쪽과 같게
+                self.rect.left = tile.rect.right
+
+        # check for map sprites collisions.
         self.rect.y += y_velocity
+        collisions = pygame.sprite.spritecollide(self, collision_group["map"], False)
+        for tile in collisions:
+            # y velocity 가 0보다 클 때 :: 아래쪽으로 떨어질 때
+            if y_velocity > 0 :
+                # 플레이어의 아래쪽은 충될된 타일의 윗쪽과 같게
+                self.rect.bottom = tile.rect.top
 
+            # y velocity 가 0보다 작을 때 :: 윗 쪽으로 갈 대
+            if y_velocity < 0 :
+                self.rect.top = tile.rect.bottom
 
-    def check_collison(self, collisoned_tile_rect:Tile):
-        if self.rect.bottom >= collisoned_tile_rect.rect.top :
-            self.player_y_momentum = 0
+    # def check_collison(self, collisoned_tile_rect:Tile):
+    #     if self.rect.bottom >= collisoned_tile_rect.rect.top :
+    #         self.player_y_momentum = 0
 

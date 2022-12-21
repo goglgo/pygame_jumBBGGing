@@ -68,6 +68,9 @@ collide_sprites = pygame.sprite.Group()
 collide_sprites.add(test_sprite)
 
 EVENT = EventCheck()
+collisions_group = {
+    "map" : Map.collision_group
+}
 
 while EVENT.running:
     EVENT.check()
@@ -83,10 +86,9 @@ while EVENT.running:
     display.blit(test_sprite.surf, test_sprite.rect)
     screen.blit(display, (0, 0))
     
-    # display를 screen (0,0) 좌표에 뿌립니다.
     display = pygame.transform.scale(display, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    Player.move()
+    Player.move(collisions_group)
 
     pygame.display.flip()
     clock.tick(60)
