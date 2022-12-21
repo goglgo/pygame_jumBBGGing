@@ -33,107 +33,82 @@ class Player(pygame.sprite.Sprite):
 
         self.x_velocity = 0
         self.y_velocity = 0
+
+        self.right = False
+        self.left = False
+        self.up = False
+        self.down = False
     
-    def move(self, movement:list):
-        self.rect.x += movement[0] # right move
-        # collisions = collision_test(rect,tiles)
+    def move(self, movement=None):
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_RIGHT:
+                    self.right = True
+                if event.key == K_LEFT:
+                    self.left = True
+                if event.key == K_DOWN:
+                    self.down = True
+                if event.key == K_UP:
+                    self.up = True
+                    
+            if event.type == KEYUP:
+                if event.key == K_RIGHT:
+                    self.right = False
+                if event.key == K_LEFT:
+                    self.left = False
+                if event.key == K_DOWN:
+                    self.down = False
+                if event.key == K_UP:
+                    self.up = False
+
+        self.x_velocity = 0
+        self.y_velocity = 0
+
+        if self.right == True:
+            self.x_velocity += 5
+        if self.left == True:
+            self.x_velocity -= 5
+        if self.up == True:
+            self.y_velocity -= 5
+        if self.down == True:
+            self.y_velocity += 5
+
+        self.rect.y += self.y_velocity
+        # collision recheck after x move completed.(tile.rect.right or left)
         collisions = pygame.sprite.spritecollide(self, tiles_group, False)
         for tile in collisions:
-            if movement[0] > 0:
-                self.rect.right = tile.rect.left
-            if movement[0] < 0:
-                self.rect.left = tile.rect.right
-        self.rect.y += movement[1]
-        # collisions = collision_test(rect,tiles)
-        collisions = pygame.sprite.spritecollide(self, tiles_group, False)
-        for tile in collisions:
-            if movement[1] > 0:
+            if self.y_velocity > 0:
                 self.rect.bottom = tile.rect.top
-            if movement[1] < 0:
+                self.y_velocity = 0
+            if self.y_velocity < 0:
                 self.rect.top = tile.rect.bottom
+                self.y_velocity = 0
+
+        # collision check after x moved
+        self.rect.x += self.x_velocity # right move
+        collisions = pygame.sprite.spritecollide(self, tiles_group, False)
+        for tile in collisions:
+            if self.x_velocity > 0:
+                self.rect.right = tile.rect.left
+                self.x_velocity = 0
+            if self.x_velocity < 0:
+                self.rect.left = tile.rect.right
+                self.x_velocity = 0
 
 
-# def collision_test(rect,tiles):
-#     collisions = []
-#     for tile in tiles:
-#         if rect.colliderect(tile):
-#             collisions.append(tile)
-#     return collisions
-
-# def move(rect,movement,tiles): # movement = [5,2]
-#     rect.x += movement[0] # right move
-#     collisions = collision_test(rect,tiles)
-#     for tile in collisions:
-#         if movement[0] > 0:
-#             rect.right = tile.left
-#         if movement[0] < 0:
-#             rect.left = tile.right
-#     rect.y += movement[1]
-#     collisions = collision_test(rect,tiles)
-#     for tile in collisions:
-#         if movement[1] > 0:
-#             rect.bottom = tile.top
-#         if movement[1] < 0:
-#             rect.top = tile.bottom
-#     return rect
-
-right = False
-left = False
-up = False
-down = False
     
 player = Player()
 
 # loop #
 while True:
     
-    # clear display #
     screen.fill((0,0,0))
-
-    movement = [0,0]
-    if right == True:
-        movement[0] += 5
-    if left == True:
-        movement[0] -= 5
-    if up == True:
-        movement[1] -= 5
-    if down == True:
-        movement[1] += 5
-
-    # player = move(player,movement,tiles)
-    player.move(movement)
+    player.move()
     tiles_group.draw(screen)
     screen.blit(player.surf, player.rect)
 
-    # pygame.draw.rect(screen,(255,255,255),player)
-
-    # for tile in tiles:
-    #     pygame.draw.rect(screen,(255,0,0),tile)
-    
-    # event handling #
-    for event in pygame.event.get():
-        if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == KEYDOWN:
-            if event.key == K_RIGHT:
-                right = True
-            if event.key == K_LEFT:
-                left = True
-            if event.key == K_DOWN:
-                down = True
-            if event.key == K_UP:
-                up = True
-        if event.type == KEYUP:
-            if event.key == K_RIGHT:
-                right = False
-            if event.key == K_LEFT:
-                left = False
-            if event.key == K_DOWN:
-                down = False
-            if event.key == K_UP:
-                up = False
-    
-    # update display #
     pygame.display.update()
     mainClock.tick(60)
