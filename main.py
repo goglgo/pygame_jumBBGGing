@@ -95,7 +95,7 @@ while EVENT.running:
     else:
         test_sprite.black_update()
 
-    collisoned_game_tile = pygame.sprite.spritecollideany(Player, Map.collison_group)
+    collisoned_game_tile = pygame.sprite.spritecollideany(Player, Map.collision_group)
     if collisoned_game_tile:
         Player.check_collison(collisoned_game_tile)
 
