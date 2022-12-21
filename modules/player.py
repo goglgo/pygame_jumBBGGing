@@ -14,6 +14,7 @@ class PlayerObject(pygame.sprite.Sprite):
 
         # surf from picture by .convert()
         self.surf = picture.convert()
+        self.surf.set_colorkey((255,255,255))
 
         # rect from surf by .get_rect()
         self.rect = self.surf.get_rect()
@@ -26,7 +27,8 @@ class PlayerObject(pygame.sprite.Sprite):
         self.right = False
         self.left = False
         self.up = False
-        self.down = False
+        # self.down = False
+        self.y_acc = 0
 
     def move(self, collision_group:dict[pygame.sprite.Group]):
         pressed_keys = pygame.key.get_pressed()  
@@ -43,8 +45,8 @@ class PlayerObject(pygame.sprite.Sprite):
         if pressed_keys[K_UP]:
             y_velocity -= 10
         
-        if pressed_keys[K_DOWN]:
-            y_velocity += 10
+        # if pressed_keys[K_DOWN]:
+        #     y_velocity += 10
 
         if self.rect.left < 0:
             self.rect.left = 0
@@ -53,11 +55,13 @@ class PlayerObject(pygame.sprite.Sprite):
             self.rect.right = self.screen_width
 
         if self.rect.y > self.screen_height - self.picture.get_height():
-            # self.player_y_momentum = -self.player_y_momentum
             self.rect.top = self.screen_height - self.picture.get_height()
-            # self.player_y_momentum = 0
+            
         if self.rect.y < 0:
             self.rect.top = 0
+
+        self.y_acc += 0.15
+        y_velocity += 5 + self.y_acc
 
         self.rect.x += x_velocity
         self._check_collision_x(x_velocity, collision_group["map"])
@@ -90,7 +94,9 @@ class PlayerObject(pygame.sprite.Sprite):
             if y_velocity > 0 :
                 # 플레이어의 아래쪽은 충될된 타일의 윗쪽과 같게
                 self.rect.bottom = tile.rect.top
+                self.y_acc = 0 
 
             # y velocity 가 0보다 작을 때 :: 윗 쪽으로 갈 대
             if y_velocity < 0 :
                 self.rect.top = tile.rect.bottom
+                self.y_acc = 0 

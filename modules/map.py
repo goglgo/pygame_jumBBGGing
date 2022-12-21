@@ -40,6 +40,8 @@ class GameMap(object):
         self.dirt_img = pygame.transform.scale(self.dirt_img, (self.tile_size_x, self.tile_size_y))
         self.grass_img = pygame.transform.scale(self.grass_img, (self.tile_size_x, self.tile_size_y))
         self.none_img = pygame.transform.scale(self.none_img, (self.tile_size_x, self.tile_size_y))
+
+        self.grass_img.set_colorkey((255,255,255))
         
         self.collision_group = pygame.sprite.Group()
 

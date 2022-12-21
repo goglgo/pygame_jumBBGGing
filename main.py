@@ -89,7 +89,7 @@ while EVENT.running:
     Map.update(display)
     
     display.blit(Player.surf, Player.rect)
-    display.blit(test_sprite.surf, test_sprite.rect)
+    # display.blit(test_sprite.surf, test_sprite.rect)
     screen.blit(display, (0, 0))
     
     display = pygame.transform.scale(display, (SCREEN_WIDTH, SCREEN_HEIGHT))
