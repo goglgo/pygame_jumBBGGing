@@ -58,10 +58,17 @@ class PlayerObject(pygame.sprite.Sprite):
             # self.player_y_momentum = 0
         if self.rect.y < 0:
             self.rect.top = 0
-        
+
         self.rect.x += x_velocity
+        self._check_collision_x(x_velocity, collision_group["map"])
+
+        self.rect.y += y_velocity
+        self._check_collision_y(y_velocity, collision_group["map"])
+        
+
+    def _check_collision_x(self, x_velocity, collision_group, is_Destroy=False):
         # check for map sprites collisions.
-        collisions = pygame.sprite.spritecollide(self, collision_group["map"], False)
+        collisions = pygame.sprite.spritecollide(self, collision_group, is_Destroy)
         for tile in collisions:
             # x velocity 가 0보다 클 때 :: 오른쪽으로 갈 때
             if x_velocity > 0 :
@@ -73,9 +80,11 @@ class PlayerObject(pygame.sprite.Sprite):
                 # 플레이어의 왼쪽은 충될된 타일의 오른쪽과 같게
                 self.rect.left = tile.rect.right
 
+
+
+    def _check_collision_y(self, y_velocity, collision_group, is_Destroy=False):
         # check for map sprites collisions.
-        self.rect.y += y_velocity
-        collisions = pygame.sprite.spritecollide(self, collision_group["map"], False)
+        collisions = pygame.sprite.spritecollide(self, collision_group, is_Destroy)
         for tile in collisions:
             # y velocity 가 0보다 클 때 :: 아래쪽으로 떨어질 때
             if y_velocity > 0 :
@@ -85,8 +94,3 @@ class PlayerObject(pygame.sprite.Sprite):
             # y velocity 가 0보다 작을 때 :: 윗 쪽으로 갈 대
             if y_velocity < 0 :
                 self.rect.top = tile.rect.bottom
-
-    # def check_collison(self, collisoned_tile_rect:Tile):
-    #     if self.rect.bottom >= collisoned_tile_rect.rect.top :
-    #         self.player_y_momentum = 0
-

@@ -49,6 +49,11 @@ class CollideTest(pygame.sprite.Sprite):
         self.surf = pygame.Surface((100,100))
         self.surf.fill((255,0,0))
         self.rect = pygame.Rect(100,100,100,50)
+    
+    def resize(self, size:tuple):
+        pygame.transform.scale(self.surf, size)
+        self.rect = self.surf.get_rect()
+        self.rect.move_ip(100, 80)
 
     def red_update(self):
         self.surf.fill((255,0,0))
@@ -69,7 +74,8 @@ collide_sprites.add(test_sprite)
 
 EVENT = EventCheck()
 collisions_group = {
-    "map" : Map.collision_group
+    "map" : Map.collision_group,
+    "test": collide_sprites
 }
 
 while EVENT.running:
@@ -87,6 +93,12 @@ while EVENT.running:
     screen.blit(display, (0, 0))
     
     display = pygame.transform.scale(display, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    # test_sprite.resize((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # if pygame.sprite.spritecollideany(Player, collide_sprites):
+    #     test_sprite.red_update()
+    # else :
+    #     test_sprite.black_update()
 
     Player.move(collisions_group)
 
