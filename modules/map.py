@@ -117,21 +117,3 @@ class GameMap(object):
     def total_height(self):
         return len(self.game_map)*self.tile_size
 
-
-def simple_camera(camera, target_rect):
-    l, t, _, _ = target_rect # l = left,  t = top
-    _, _, w, h = camera      # w = width, h = height
-    return pygame.Rect(-l + SCREEN_WIDTH/2, -t+SCREEN_HEIGHT/2, w, h)
-
-
-def complex_camera(camera, target_rect):
-    # we want to center target_rect
-    x = -target_rect.center[0] + SCREEN_WIDTH/2 
-    y = -target_rect.center[1] + SCREEN_HEIGHT/2
-    # move the camera. Let's use some vectors so we can easily substract/multiply
-    camera.topleft += (pygame.Vector2((x, y)) - pygame.Vector2(camera.topleft)) * 0.06 # add some smoothness coolnes
-    # set max/min x/y so we don't see stuff outside the world
-    camera.x = max(-(camera.width-SCREEN_WIDTH), min(0, camera.x))
-    camera.y = max(-(camera.height-SCREEN_HEIGHT), min(0, camera.y))
-    
-    return camera
