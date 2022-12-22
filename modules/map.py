@@ -8,16 +8,16 @@ SCREEN_HEIGHT = int(os.environ.get('SCREEN_HEIGHT', 500))
 # https://stackoverflow.com/questions/14354171/add-scrolling-to-a-platformer-in-pygame
 
 
-class Camera(object):
-    def __init__(self, camera_func, width, height):
-        self.camera_func = camera_func
-        self.state = pygame.Rect(0, 0, width, height)
+# class Camera(object):
+#     def __init__(self, camera_func, width, height):
+#         self.camera_func = camera_func
+#         self.state = pygame.Rect(0, 0, width, height)
     
-    def apply(self, target):
-        return target.rect.move(self.state.topleft)
+#     def apply(self, target):
+#         return target.rect.move(self.state.topleft)
     
-    def update(self, target):
-        self.state = self.camera_func(self.state, target.rect)
+#     def update(self, target):
+#         self.state = self.camera_func(self.state, target.rect)
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, img: pygame.Surface, x, y, w, h):
@@ -104,8 +104,8 @@ class GameMap(object):
 
 
     def update(self, surf):
-        self.collision_group.draw(surf)
-        # pass
+        # self.collision_group.draw(surf)
+        pass
         # for e in self.collision_group:
         #     surf.blit(e.image, camera.apply(e))
 

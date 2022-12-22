@@ -62,8 +62,6 @@ class CollideTest(pygame.sprite.Sprite):
 
     def black_update(self):
         self.surf.fill((0,0,0))
-    
-
 
 
 
