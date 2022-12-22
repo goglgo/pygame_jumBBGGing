@@ -4,16 +4,17 @@ import pygame, os
 
 BASE_DIR = os.getcwd()
 ASSET_DIR = os.path.join(BASE_DIR, "assets")
+MAP_DIR = os.path.join(BASE_DIR, "maps")
 
 # Set up the drawing window size
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 500
-
+TILE_SIZE = 32
 
 from pygame.locals import *
 from modules.map import *
 from modules.player import *
-
+from modules.camera import *
 pygame.init()
 
 
@@ -24,6 +25,7 @@ clock = pygame.time.Clock()
 
 os.environ['SCREEN_WIDTH'] = str(SCREEN_WIDTH)
 os.environ['SCREEN_HEIGHT'] = str(SCREEN_HEIGHT)
+os.environ['TILE_SIZE'] = str(TILE_SIZE)
 
 SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
 screen = pygame.display.set_mode(SCREEN_SIZE)
@@ -63,10 +65,9 @@ class CollideTest(pygame.sprite.Sprite):
     
 
 
-Player = PlayerObject()
 
-Map = GameMap()
 
+Map = GameMap(os.path.join(MAP_DIR, "map_level1.txt"))
 test_sprite = CollideTest()
 
 collide_sprites = pygame.sprite.Group()
@@ -78,29 +79,18 @@ collisions_group = {
     "test": collide_sprites
 }
 
+Player = PlayerObject(collisions_group)
+
+entities = CameraAwareLayeredUpdates(Player, pygame.Rect(0, 0, Map.total_width, Map.total_width))
+entities.add(Map.collision_group)
+
 while EVENT.running:
     EVENT.check()
 
-    # screen에 흰색을 채웁니다.
-    screen.fill((255, 255, 255))
-    
-    # display에 다른 색을 채웁니다.
-    display.fill((82, 89, 93))
-    Map.update(display)
-    
-    display.blit(Player.surf, Player.rect)
-    # display.blit(test_sprite.surf, test_sprite.rect)
-    screen.blit(display, (0, 0))
-    
-    display = pygame.transform.scale(display, (SCREEN_WIDTH, SCREEN_HEIGHT))
-    # test_sprite.resize((SCREEN_WIDTH, SCREEN_HEIGHT))
+    entities.update()
 
-    # if pygame.sprite.spritecollideany(Player, collide_sprites):
-    #     test_sprite.red_update()
-    # else :
-    #     test_sprite.black_update()
-
-    Player.move(collisions_group)
+    screen.fill((82, 89, 93))
+    entities.draw(screen)
 
     pygame.display.flip()
     clock.tick(60)
